@@ -65,6 +65,8 @@ export default function FolderTree({ initialPath, onSelect, onCancel }: Props) {
       .catch(() => {});
   }, [path, ensureLoaded]);
 
+  const lookupNode = useCallback((p: string) => nodes[p], [nodes]);
+
   const toggle = (p: string) => {
     const cur = nodes[p] || emptyNode();
     const willExpand = !cur.expanded;
@@ -125,7 +127,7 @@ export default function FolderTree({ initialPath, onSelect, onCancel }: Props) {
             depth={0}
             isRoot
             isActive={path === r}
-            nodeState={nodes[r]}
+            lookupNode={lookupNode}
             onToggle={toggle}
             onPickCurrent={onSelect}
             onNavigate={setPath}
@@ -185,7 +187,7 @@ function TreeNode({
   depth,
   isRoot,
   isActive,
-  nodeState,
+  lookupNode,
   onToggle,
   onPickCurrent,
   onNavigate,
@@ -195,12 +197,13 @@ function TreeNode({
   depth: number;
   isRoot: boolean;
   isActive: boolean;
-  nodeState?: NodeState;
+  lookupNode: (p: string) => NodeState | undefined;
   onToggle: (p: string) => void;
   onPickCurrent: (p: string) => void;
   onNavigate: (p: string) => void;
 }) {
   const t = useT();
+  const nodeState = lookupNode(path);
   const expanded = !!nodeState?.expanded;
   const loading = !!nodeState?.loading;
   const loaded = !!nodeState?.loaded;
@@ -237,7 +240,7 @@ function TreeNode({
           title={t("picker.pickThis")}
         >{t("picker.pick")}</button>
       </div>
-      {expanded && children.map((c) => (
+      {expanded && children.map((c: DirEntry) => (
         <TreeNode
           key={c.path}
           path={c.path}
@@ -245,7 +248,7 @@ function TreeNode({
           depth={depth + 1}
           isRoot={false}
           isActive={false}
-          nodeState={undefined /* children load on expand via onToggle */}
+          lookupNode={lookupNode}
           onToggle={onToggle}
           onPickCurrent={onPickCurrent}
           onNavigate={onNavigate}

@@ -1,18 +1,7 @@
-/**
- * Lightweight i18n: zh-CN + en-US, no external deps.
- *
- *   import { useT, setLanguage } from "../i18n";
- *   const t = useT();
- *   <h1>{t("app.brand")}</h1>
- *   <p>{t("status.shown", { filtered: 3, total: 10 })}</p>
- *
- * Language preference is persisted in localStorage["rowpic.lang"] and
- * detected from the browser on first load.
- */
+/** Lightweight i18n: zh-CN + en-US, no external deps. */
 import { useSyncExternalStore } from "react";
 
 export type Lang = "zh-CN" | "en-US";
-
 const STORAGE_KEY = "rowpic.lang";
 const SUPPORTED: Lang[] = ["zh-CN", "en-US"];
 
@@ -20,23 +9,16 @@ function detectInitial(): Lang {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && (SUPPORTED as string[]).includes(saved)) return saved as Lang;
-  } catch {
-    /* localStorage may be blocked */
-  }
+  } catch {}
   const nav = typeof navigator !== "undefined" ? navigator.language : "en-US";
   if (nav.toLowerCase().startsWith("zh")) return "zh-CN";
   return "en-US";
 }
 
-// --------- the actual translation dicts ---------
 type Dict = Record<string, string>;
-
 const en: Dict = {
-  // brand
   "app.brand": "rowpic",
   "app.tagline": "RAW + standard photo browser / analyzer / colorist",
-
-  // common
   "common.ready": "Ready",
   "common.working": "Working...",
   "common.error": "Error",
@@ -49,17 +31,13 @@ const en: Dict = {
   "common.unknown": "unknown",
   "common.yes": "Yes",
   "common.no": "No",
-
-  // top bar
-  "topbar.placeholder": "Folder path (e.g. C:\\Users\\you\\Pictures)",
+  "topbar.placeholder": "Folder path (e.g. C:\\\\Users\\\\you\\\\Pictures)",
   "topbar.scan": "Scan Folder",
   "topbar.scanning": "Scanning...",
   "topbar.classify": "One-Click Classify",
   "topbar.classifying": "Analyzing...",
   "topbar.noFolder": "(no folder)",
   "topbar.lang.label": "Language",
-
-  // sidebar
   "sidebar.count": "{filtered} / {total} photos",
   "sidebar.rawHint": "RAW = camera raw",
   "sidebar.empty": "No photos. Scan a folder to begin.",
@@ -70,8 +48,6 @@ const en: Dict = {
   "sidebar.category.underexposed": "Dark",
   "sidebar.category.overexposed": "Bright",
   "sidebar.category.duplicate": "Duplicate",
-
-  // category badge labels
   "category.keep": "Keep",
   "category.blurry": "Blurry",
   "category.blurry_face": "Face",
@@ -79,14 +55,10 @@ const en: Dict = {
   "category.overexposed": "Bright",
   "category.duplicate": "Dup",
   "category.unclassified": "",
-
-  // stage
   "stage.empty": "Select a photo to preview",
   "stage.hint": "Drag the grid to move · Shift+drag to scale · Wheel to zoom",
   "stage.grid": "Grid",
   "stage.reset": "Reset",
-
-  // composition
   "composition.none": "none",
   "composition.rule_of_thirds": "rule of thirds",
   "composition.golden_ratio": "golden ratio",
@@ -96,23 +68,17 @@ const en: Dict = {
   "composition.triangle": "triangle",
   "composition.harmonic": "harmonic",
   "composition.custom": "custom",
-
-  // right panel tabs
   "tab.exif": "EXIF",
   "tab.hist": "Histogram",
   "tab.focus": "Focus",
   "tab.color": "Color",
   "right.noPhoto": "No photo selected",
   "right.loading": "loading...",
-
-  // histogram
   "hist.title": "RGB + Luminance Histogram",
   "hist.legend": "R · G · B · Lum",
   "hist.clipping": "Clipping",
   "hist.highlights": "Highlights",
   "hist.shadows": "Shadows",
-
-  // focus
   "focus.noData": "No focus data",
   "focus.overall": "Overall Sharpness",
   "focus.laplacian": "Laplacian var.",
@@ -121,8 +87,6 @@ const en: Dict = {
   "focus.backlit": "Backlit",
   "focus.faces": "Detected Faces ({n})",
   "focus.heatmap": "Focus Heatmap",
-
-  // exif
   "exif.file": "File",
   "exif.format": "Format",
   "exif.size": "Size",
@@ -142,11 +106,9 @@ const en: Dict = {
   "exif.wb": "WB",
   "exif.flash": "Flash",
   "exif.rawExtras": "RAW Extras",
-  "exif.focalEquiv": "(≈ {n}mm eq.)",
+  "exif.focalEquiv": "(approx {n}mm eq.)",
   "exif.focalMm": "{n}mm",
   "exif.apertureVal": "f/{n}",
-
-  // color panel
   "color.light": "Light",
   "color.colorSection": "Color",
   "color.exposure": "Exposure",
@@ -169,34 +131,41 @@ const en: Dict = {
   "color.aiHelp": "AI Look requires ROWPIC_ENABLE_AI_COLOR=true on the backend. Edit backend/.env and restart to enable the deep-learning model path.",
   "color.evFmt": "{sign}{n} EV",
   "color.aiTitle": "AI color (server-side; falls back to Auto when no model is loaded)",
-
-  // status bar
   "status.ready": "Ready",
   "status.working": "Working...",
   "status.shown": "{filtered} shown / {total} total",
-
-  // errors
   "error.enterPath": "Enter a folder path to scan",
   "error.noPhotos": "No photos to classify",
   "error.classifyFailed": "Classify failed: {msg}",
   "error.scanFailed": "Scan failed: {msg}",
   "error.detailFailed": "Detail failed: {msg}",
-
-  // classified summary
   "summary.classified": "Classified {total}: {breakdown}",
-
-  // generic
   "generic.byte": "B",
   "generic.kb": "K",
   "generic.mb": "M",
+  "picker.browse": "Browse",
+  "picker.select": "Select",
+  "picker.selectFolder": "Select a folder",
+  "picker.expand": "Expand / collapse",
+  "picker.pick": "Open",
+  "picker.pickThis": "Open this folder",
+  "picker.up": "Up one level",
+  "picker.folderSummary": "{dirs} folders, {files} files",
+  "history.title": "Recent",
+  "history.empty": "No history yet.  Pick a folder or run a scan to get started.",
+  "history.remove": "Remove from history",
+  "history.clear": "Clear all",
+  "history.confirmClear": "Clear all history?",
+  "history.usedTimes": "used {n}x",
+  "history.never": "never",
+  "history.justNow": "just now",
+  "history.minutesAgo": "{n} min ago",
+  "history.hoursAgo": "{n} h ago",
+  "history.daysAgo": "{n} d ago",
 };
-
 const zh: Dict = {
-  // brand
   "app.brand": "rowpic",
   "app.tagline": "RAW + 标准照片浏览器 / 分析器 / 调色器",
-
-  // common
   "common.ready": "就绪",
   "common.working": "处理中…",
   "common.error": "错误",
@@ -209,17 +178,13 @@ const zh: Dict = {
   "common.unknown": "未知",
   "common.yes": "是",
   "common.no": "否",
-
-  // top bar
-  "topbar.placeholder": "照片目录路径（如 C:\\Users\\you\\Pictures）",
+  "topbar.placeholder": "照片目录路径（如 C:\\\\Users\\\\you\\\\Pictures）",
   "topbar.scan": "扫描目录",
   "topbar.scanning": "扫描中…",
   "topbar.classify": "一键归类",
   "topbar.classifying": "分析中…",
   "topbar.noFolder": "（未选目录）",
   "topbar.lang.label": "语言",
-
-  // sidebar
   "sidebar.count": "{filtered} / {total} 张",
   "sidebar.rawHint": "RAW = 相机原始格式",
   "sidebar.empty": "暂无照片。请先扫描目录。",
@@ -230,8 +195,6 @@ const zh: Dict = {
   "sidebar.category.underexposed": "欠曝",
   "sidebar.category.overexposed": "过曝",
   "sidebar.category.duplicate": "重复",
-
-  // category badge labels
   "category.keep": "保留",
   "category.blurry": "虚焦",
   "category.blurry_face": "脸糊",
@@ -239,14 +202,10 @@ const zh: Dict = {
   "category.overexposed": "过曝",
   "category.duplicate": "重",
   "category.unclassified": "",
-
-  // stage
   "stage.empty": "请在左侧选择一张照片",
   "stage.hint": "拖拽移动参考线 · Shift+拖拽缩放 · 滚轮缩放",
   "stage.grid": "参考线",
   "stage.reset": "重置",
-
-  // composition
   "composition.none": "无",
   "composition.rule_of_thirds": "三分法",
   "composition.golden_ratio": "黄金分割",
@@ -256,23 +215,17 @@ const zh: Dict = {
   "composition.triangle": "三角",
   "composition.harmonic": "和声",
   "composition.custom": "自定义",
-
-  // right panel tabs
   "tab.exif": "EXIF",
   "tab.hist": "直方图",
   "tab.focus": "对焦",
   "tab.color": "调色",
   "right.noPhoto": "未选择照片",
   "right.loading": "加载中…",
-
-  // histogram
   "hist.title": "RGB + 亮度直方图",
   "hist.legend": "红 · 绿 · 蓝 · 亮度",
   "hist.clipping": "剪切检测",
   "hist.highlights": "高光剪切",
   "hist.shadows": "暗部剪切",
-
-  // focus
   "focus.noData": "无对焦数据",
   "focus.overall": "整体锐度",
   "focus.laplacian": "拉普拉斯方差",
@@ -281,8 +234,6 @@ const zh: Dict = {
   "focus.backlit": "逆光",
   "focus.faces": "检测到人脸（{n}）",
   "focus.heatmap": "对焦热力图",
-
-  // exif
   "exif.file": "文件",
   "exif.format": "格式",
   "exif.size": "大小",
@@ -302,11 +253,9 @@ const zh: Dict = {
   "exif.wb": "白平衡",
   "exif.flash": "闪光",
   "exif.rawExtras": "RAW 附加信息",
-  "exif.focalEquiv": "（≈{n}mm 等效）",
+  "exif.focalEquiv": "（约{n}mm 等效）",
   "exif.focalMm": "{n}mm",
   "exif.apertureVal": "f/{n}",
-
-  // color panel
   "color.light": "光线",
   "color.colorSection": "颜色",
   "color.exposure": "曝光",
@@ -329,31 +278,40 @@ const zh: Dict = {
   "color.aiHelp": "AI 调色需要在后端开启 ROWPIC_ENABLE_AI_COLOR=true。编辑 backend/.env 后重启即可启用深度学习模型路径。",
   "color.evFmt": "{sign}{n} EV",
   "color.aiTitle": "AI 调色（服务端处理；未加载模型时回退到自动色调）",
-
-  // status bar
   "status.ready": "就绪",
   "status.working": "处理中…",
   "status.shown": "显示 {filtered} / 共 {total} 张",
-
-  // errors
   "error.enterPath": "请输入要扫描的目录",
   "error.noPhotos": "没有可归类的照片",
   "error.classifyFailed": "归类失败：{msg}",
   "error.scanFailed": "扫描失败：{msg}",
   "error.detailFailed": "详情加载失败：{msg}",
-
-  // classified summary
   "summary.classified": "已归类 {total} 张：{breakdown}",
-
-  // generic
   "generic.byte": "B",
   "generic.kb": "K",
   "generic.mb": "M",
+  "picker.browse": "浏览",
+  "picker.select": "选择",
+  "picker.selectFolder": "请选择文件夹",
+  "picker.expand": "展开 / 折叠",
+  "picker.pick": "打开",
+  "picker.pickThis": "打开此文件夹",
+  "picker.up": "上一级",
+  "picker.folderSummary": "{dirs} 个文件夹，{files} 个文件",
+  "history.title": "历史",
+  "history.empty": "暂无历史。选个文件夹或跑一次扫描就开始记录。",
+  "history.remove": "从历史中移除",
+  "history.clear": "清空",
+  "history.confirmClear": "确定清空所有历史？",
+  "history.usedTimes": "使用过 {n} 次",
+  "history.never": "从未",
+  "history.justNow": "刚刚",
+  "history.minutesAgo": "{n} 分钟前",
+  "history.hoursAgo": "{n} 小时前",
+  "history.daysAgo": "{n} 天前",
 };
-
 const DICTS: Record<Lang, Dict> = { "en-US": en, "zh-CN": zh };
 
-// --------- reactive language state ---------
 let _lang: Lang = detectInitial();
 const _subs = new Set<() => void>();
 
@@ -362,13 +320,8 @@ function subscribe(cb: () => void) {
   return () => { _subs.delete(cb); };
 }
 
-function getSnapshot() {
-  return _lang;
-}
-
-function getServerSnapshot(): Lang {
-  return _lang;
-}
+function getSnapshot() { return _lang; }
+function getServerSnapshot(): Lang { return _lang; }
 
 export function setLanguage(lang: Lang) {
   if (lang === _lang) return;
@@ -377,13 +330,8 @@ export function setLanguage(lang: Lang) {
   _subs.forEach((cb) => cb());
 }
 
-export function getLanguage(): Lang {
-  return _lang;
-}
-
-export function useLang(): Lang {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-}
+export function getLanguage(): Lang { return _lang; }
+export function useLang(): Lang { return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot); }
 
 export function useT(): (key: string, params?: Record<string, string | number>) => string {
   const lang = useLang();
@@ -408,5 +356,4 @@ function translate(lang: Lang, key: string, params?: Record<string, string | num
 
 export const SUPPORTED_LANGS = SUPPORTED;
 export const LANG_LABELS: Record<Lang, string> = { "zh-CN": "中文", "en-US": "English" };
-
 export { translate };

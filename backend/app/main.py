@@ -15,6 +15,7 @@ from app.api.routes_color import router as color_router
 from app.api.routes_classify import router as classify_router
 from app.api.routes_info import router as info_router
 from app.api.routes_tools import router as tools_router
+from app.api.routes_fs import router as fs_router
 from app.core.config import settings
 from app.core.logging import setup_logging
 
@@ -40,6 +41,7 @@ app.include_router(photos_router)
 app.include_router(color_router)
 app.include_router(classify_router)
 app.include_router(tools_router)
+app.include_router(fs_router)
 
 
 @app.get("/")
@@ -52,7 +54,6 @@ def healthz():
     return {"ok": True}
 
 
-# Mount built frontend (production) if present
 FRONT_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 if FRONT_DIST.is_dir():
     @app.get("/ui")

@@ -163,6 +163,28 @@ def main() -> int:
     m = http_json("/api/color/models")
     print(f"      enable_ai_color={m['enable_ai_color']}  model={m['ai_color_model']}  available={m['available']}")
 
+
+    # 14. fs: roots + list
+    print("\n[14] fs (path picker support)")
+    roots = http_json("/api/fs/roots")
+    check(isinstance(roots, list) and len(roots) > 0, f"roots returned {len(roots)} entries: {roots[:3]}")
+    if SAMPLES.exists():
+        listing = http_json(f"/api/fs/list?path={urllib.parse.quote(str(SAMPLES))}")
+        check(listing.get("path") == str(SAMPLES).replace("/", "\\"), f"listing path = {listing.get('path')}")
+        check("dirs" in listing, "listing has dirs")
+        print(f"      {len(listing['dirs'])} subdirs, {listing['file_count']} files")
+    # 15. fs: nested list (try a known parent)
+    if SAMPLES.exists():
+        rowpic = SAMPLES.parent
+        listing2 = http_json(f"/api/fs/list?path={urllib.parse.quote(str(rowpic))}")
+        check("dirs" in listing2 and len(listing2["dirs"]) > 0, f"parent listing has {len(listing2.get('dirs', []))} subdirs")
+    # 16. fs: 404 on missing
+    try:
+        http_json(f"/api/fs/list?path={urllib.parse.quote('C:\\nonexistent_xyz')}")
+        check(False, "404 on missing path")
+    except Exception as e:
+        check("404" in str(e) or "Not Found" in str(e), f"404 on missing path: {str(e)[:50]}")
+
     print("\n" + "=" * 50)
     if failures:
         print(f"FAILED ({len(failures)}):")

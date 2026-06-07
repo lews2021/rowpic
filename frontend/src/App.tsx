@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "./api/client";
+import { pushHistory } from "./api/history";
 import type { CategoryLabel, PhotoDetail, PhotoMeta } from "./api/types";
 import { useLang, useT } from "./i18n";
 import TopBar from "./components/TopBar";
@@ -20,7 +21,6 @@ export default function App() {
   const [error, setError] = useState<string>("");
   const [filter, setFilter] = useState<CategoryLabel | "all">("all");
 
-  // Sync html lang with current language so the browser picks the right font.
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
@@ -34,6 +34,8 @@ export default function App() {
     try {
       const res = await api.scan(path, true);
       setPhotos(res.photos);
+      // Record into history (most recent first, capped)
+      pushHistory(path);
     } catch (e: any) {
       setError(t("error.scanFailed", { msg: e.message ?? e }));
       setPhotos([]);

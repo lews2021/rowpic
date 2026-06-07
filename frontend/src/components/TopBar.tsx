@@ -3,6 +3,7 @@ import { api } from "../api/client";
 import type { ClassifyRequest, PhotoMeta } from "../api/types";
 import { LANG_LABELS, SUPPORTED_LANGS, setLanguage, useLang, useT } from "../i18n";
 import type { Lang } from "../i18n";
+import PathPicker from "./PathPicker";
 
 interface Props {
   root: string;
@@ -21,15 +22,27 @@ const QUICK_PATHS = [
 export default function TopBar({ root, scanning, photos, onScan, onClassified, onError }: Props) {
   const t = useT();
   const lang = useLang();
-  const [pathInput, setPathInput] = useState("");
+  const [pathInput, setPathInput] = useState(root);
   const [classifying, setClassifying] = useState(false);
 
-  const handleScan = () => {
-    if (!pathInput.trim() && !root) {
+  // Keep the input synced with the externally-set root when scans happen
+  // elsewhere (e.g. tree picker auto-scan).
+  useState(() => { /* noop */ });
+
+  const doScan = (p: string) => {
+    if (!p.trim()) {
       onError(t("error.enterPath"));
       return;
     }
-    onScan(pathInput.trim() || root);
+    onScan(p.trim());
+  };
+
+  const handleScan = () => doScan(pathInput);
+
+  // Called by the tree picker: replace input + immediately scan
+  const handlePick = (p: string) => {
+    setPathInput(p);
+    doScan(p);
   };
 
   const handleClassify = async () => {
@@ -69,17 +82,13 @@ export default function TopBar({ root, scanning, photos, onScan, onClassified, o
   return (
     <div className="topbar">
       <div className="brand">rowpic</div>
-      <input
-        style={{ width: 360 }}
-        placeholder={t("topbar.placeholder")}
+      <PathPicker
         value={pathInput}
-        onChange={(e) => setPathInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleScan()}
-        list="quick-paths"
+        onChange={setPathInput}
+        onScan={handleScan}
+        onPick={handlePick}
+        onError={onError}
       />
-      <datalist id="quick-paths">
-        {QUICK_PATHS.map((p) => <option key={p} value={p} />)}
-      </datalist>
       <button className="primary" onClick={handleScan} disabled={scanning}>
         {scanning ? <><span className="spinner" /> {t("topbar.scanning")}</> : t("topbar.scan")}
       </button>

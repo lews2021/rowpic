@@ -44,21 +44,36 @@ function drawGoldenRatio(ctx: CanvasRenderingContext2D, w: number, h: number, co
 }
 
 function drawGoldenSpiral(ctx: CanvasRenderingContext2D, w: number, h: number, color: string, lw: number) {
-  // iterative fibonacci spiral approximated with quarter-arcs
-  ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = lw;
-  const phi = 1.61803398875;
-  const a = Math.min(w, h) / (1 + phi + phi * phi + phi * phi * phi);
-  const sizes = [a, a * phi, a * phi * phi, a * phi * phi * phi];
-  const ox = w * 0.08, oy = h * 0.08;
-  // 4 quadrants
-  let x = ox, y = oy;
-  ctx.moveTo(x + sizes[0], y);
-  ctx.arc(x + sizes[0], y + sizes[0], sizes[0], -Math.PI / 2, 0);
-  ctx.arc(x, y + sizes[0], sizes[0], 0, Math.PI / 2);
-  ctx.arc(x, y, sizes[0], Math.PI / 2, Math.PI);
+  // Logarithmic spiral whose radius is multiplied by phi every quarter turn.
+  //   r(theta) = rMax * exp(-b * (theta - thetaStart))
+  //   where b = ln(phi) / (pi/2)  =>  every +pi/2 in theta divides r by phi.
+  // We sample 96 points along 2.5 turns; the result is a smooth, classic
+  // golden spiral centered in the canvas.
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lw;
+
+  const phi = 1.6180339887498949;
+  const b = Math.log(phi) / (Math.PI / 2);
+
+  const cx = w / 2;
+  const cy = h / 2;
+  const rMax = Math.min(w, h) * 0.48;
+  const turns = 2.5;
+  const totalAngle = turns * 2 * Math.PI;
+  const steps = 96;
+  const thetaStart = -Math.PI / 2; // start at top of canvas
+
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const theta = thetaStart + t * totalAngle;
+    const r = rMax * Math.exp(-b * t * totalAngle);
+    const x = cx + r * Math.cos(theta);
+    const y = cy + r * Math.sin(theta);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
   ctx.stroke();
-  // visually indicates the spiral direction
-  void sizes;
 }
 
 function drawDiagonal(ctx: CanvasRenderingContext2D, w: number, h: number, color: string, lw: number) {

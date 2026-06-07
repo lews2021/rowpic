@@ -3,6 +3,10 @@ import { api } from "../api/client";
 import type { PhotoDetail, PhotoMeta } from "../api/types";
 import { useT } from "../i18n";
 import CompositionOverlayCanvas from "./CompositionOverlay";
+import type { FaceBox } from "../api/types";
+
+// Reused constant to keep array reference stable when focus is absent.
+const EMPTY_FACES: FaceBox[] = [];
 
 interface Props {
   selected: PhotoMeta | null;
@@ -83,7 +87,7 @@ export default function Stage({ selected, detail, loading }: Props) {
                 height={size.h}
                 imageNaturalWidth={natural.w}
                 imageNaturalHeight={natural.h}
-                faces={detail.focus?.faces ?? []}
+                faces={detail.focus?.faces ?? EMPTY_FACES}
               />
             )}
           </>

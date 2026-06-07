@@ -1,5 +1,5 @@
 /** Lightweight i18n: zh-CN + en-US, no external deps. */
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export type Lang = "zh-CN" | "en-US";
 const STORAGE_KEY = "rowpic.lang";
@@ -335,7 +335,10 @@ export function useLang(): Lang { return useSyncExternalStore(subscribe, getSnap
 
 export function useT(): (key: string, params?: Record<string, string | number>) => string {
   const lang = useLang();
-  return (key, params) => translate(lang, key, params);
+  return useCallback(
+    (key, params) => translate(lang, key, params),
+    [lang]
+  );
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {

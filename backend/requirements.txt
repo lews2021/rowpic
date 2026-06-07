@@ -1,0 +1,30 @@
+# Web framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.12
+websockets==13.1
+
+# Image processing
+rawpy==0.21.0
+Pillow==10.4.0
+opencv-python-headless==4.10.0.84
+numpy==1.26.4
+scikit-image==0.24.0
+
+# EXIF
+exifread==3.0.0
+piexif==1.1.3
+
+# Optional AI color inference (Zero-DCE / CSRNet / custom ONNX)
+# onnxruntime==1.19.2
+
+# Config
+pydantic==2.9.2
+pydantic-settings==2.5.2
+PyYAML==6.0.1
+python-dotenv==1.0.1
+
+# Utilities
+aiofiles==24.1.0
+tqdm==4.66.5
+watchdog==5.0.3

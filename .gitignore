@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Cache
+backend/cache/
+backend/.cache/
+.cache/
+.cache/thumbs/
+.cache/previews/
+
+# Build outputs
+frontend/dist/
+frontend/node_modules/
+desktop/src-tauri/target/
+desktop/src-tauri/Cargo.lock
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+
+# Models
+models/
+
+# Tauri
+desktop/src-tauri/gen/
+
+# Test artifacts
+samples/_*
+# TypeScript build cache
+*.tsbuildinfo
+
+# Empty directories (docs/)
+docs/
+
+# Backend cache (preview/thumb cached images)
+backend/cache/
